@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Minute Cryptic — Valentine’s Edition</title>
+
+<style>
+:root {
+  --pink: #ff4f9a;
+  --soft-pink: #ff8fab;
+  --green: #c1dfc4;
+  --dark: #2d4a2f;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #fffafb;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin: 0;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--soft-pink);
+}
+
+.date {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.clue-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 5px solid var(--soft-pink);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.clue-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.grid {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.tile {
+  width: 48px;
+  height: 56px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile.filled {
+  border-color: var(--soft-pink);
+}
+
+.tile.correct {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--dark);
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.key {
+  background: #e2e2e2;
+  border: none;
+  border-radius: 4px;
+  padding: 14px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.key.wide {
+  grid-column: span 2;
+}
+
+.success {
+  display: none;
+  margin-top: 25px;
+  background: white;
+  border-radius: 15px;
+  border: 3px solid var(--soft-pink);
+  padding: 25px;
+  animation: slideUp 0.7s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.note p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.cunty {
+  color: var(--pink);
+  font-weight: 800;
+  display: inline-block;
+  animation: pop 0.6s ease forwards;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.ps {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: #777;
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+<div class="header">
+  <div class="logo">MINUTE <span>CRYPTIC</span></div>
+  <div class="date">VALENTINE’S EDITION</div>
+</div>
+
+<div class="clue-box">
+  <div class="clue-text">Possessive request from speaker (2,4)</div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="keyboard" id="keyboard"></div>
+
+<div class="success" id="success">
+  <div class="note">
+    <p>
+      Puzzle was easily solved by Kiss Vocabulary because she is a
+      <span class="cunty">CUNTY GENIUS</span> and the <b>GOAT</b>.
+    </p>
+
+    <p>
+      Valentine’s Day is one week away, and it would mean the world if you would be mine.
+      While I am unable to be with you today, I can’t wait to see you in St. Louis this
+      upcoming weekend for an extra long stay.
+    </p>
+
+    <p>So, what do you say...</p>
+
+    <p><b>Ellie, will you be my Valentine?</b></p>
+
+    <p class="ps">P.S. – D and Clyde are DYING to see Milford.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+const ANSWER = "BEMINE";
+let guess = "";
+
+const grid = document.getElementById("grid");
+const kb = document.getElementById("keyboard");
+
+// create grid
+for (let i = 0; i < ANSWER.length; i++) {
+  const t = document.createElement("div");
+  t.className = "tile";
+  t.id = "t" + i;
+  grid.appendChild(t);
+}
+
+// keyboard
+["QWERTYUIOP","ASDFGHJKL","ZXCVBNM"].forEach((row, r) => {
+  row.split("").forEach(l => {
+    const b = document.createElement("button");
+    b.className = "key";
+    b.textContent = l;
+    b.onclick = () => add(l);
+    kb.appendChild(b);
+  });
+  if (r === 2) {
+    const d = document.createElement("button");
+    d.className = "key wide";
+    d.textContent = "DEL";
+    d.onclick = del;
+    kb.appendChild(d);
+  }
+});
+
+function add(c) {
+  if (guess.length < ANSWER.length) {
+    guess += c;
+    render();
+    if (guess === ANSWER) win();
+  }
+}
+
+function del() {
+  guess = guess.slice(0,-1);
+  render();
+}
+
+function render() {
+  for (let i = 0; i < ANSWER.length; i++) {
+    const t = document.getElementById("t"+i);
+    t.textContent = guess[i] || "";
+    t.className = guess[i] ? "tile filled" : "tile";
+  }
+}
+
+function win() {
+  for (let i = 0; i < ANSWER.length; i++) {
+    document.getElementById("t"+i).classList.add("correct");
+  }
+  setTimeout(() => {
+    kb.style.display = "none";
+    document.getElementById("success").style.display = "block";
+  }, 700);
+}
+
+// physical keyboard
+document.addEventListener("keydown", e => {
+  if (/^[a-z]$/i.test(e.key)) add(e.key.toUpperCase());
+  if (e.key === "Backspace") del();
+});
+</script>
+
+</body>
+</html>
