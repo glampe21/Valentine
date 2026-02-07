@@ -272,3 +272,112 @@ document.addEventListener("keydown", e => {
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minute Cryptic 💘</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #fff6f8;
+    color: #333;
+    padding: 24px;
+    max-width: 420px;
+    margin: auto;
+  }
+  h1 {
+    text-align: center;
+  }
+  .clue {
+    margin: 20px 0;
+    line-height: 1.5;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 12px;
+  }
+  button {
+    margin-top: 12px;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .hint, .success {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .hint {
+    background: #ffe3ea;
+  }
+  .success {
+    background: #e6ffef;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>💘 Minute Cryptic</h1>
+
+<p><strong>Answer format:</strong> 2 words, 6 letters total</p>
+
+<div class="clue">
+  <p><strong>Clue:</strong></p>
+  <p>
+    Said softly, never done.<br>
+    Held close, brief but full of feeling.<br>
+    Obvious once you stop treating it like a question.<br>
+    Remember who you already are to me.
+  </p>
+</div>
+
+<input type="text" id="answer" placeholder="Type your answer…" />
+
+<button onclick="checkAnswer()">Submit</button>
+<button onclick="showHint()">Hint</button>
+
+<div id="message"></div>
+
+<script>
+  const hints = [
+    "This is something you say, not something you do.",
+    "It’s short, direct, and affectionate.",
+    "Think less “question,” more “claim.”",
+    "The first word is something you already are to me."
+  ];
+
+  let hintIndex = 0;
+
+  function showHint() {
+    if (hintIndex < hints.length) {
+      document.getElementById("message").innerHTML =
+        `<div class="hint">${hints[hintIndex]}</div>`;
+      hintIndex++;
+    } else {
+      document.getElementById("message").innerHTML =
+        `<div class="hint">No more hints — trust your gut 💕</div>`;
+    }
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById("answer").value.trim().toUpperCase();
+    if (input === "BE MINE") {
+      document.getElementById("message").innerHTML =
+        `<div class="success">
+          No timer on this one—just wanted you to know how I feel.<br><br>
+          So… will you be my Valentine? ❤️
+        </div>`;
+    } else {
+      document.getElementById("message").innerHTML =
+        `<div class="hint">Not quite — you’re close 💗</div>`;
+    }
+  }
+</script>
+
+</body>
+</html>
